@@ -48,9 +48,9 @@ html,body{{margin:0;padding:0;width:1200px;height:750px;overflow:hidden;font-fam
 .canvas{{position:relative;width:1200px;height:750px;overflow:hidden;{canvas_bg}}}
 .frame{{position:absolute;inset:14px;border:2px solid {frame_color};border-radius:32px;pointer-events:none;z-index:8;}}
 .kicker{{position:absolute;top:46px;right:64px;color:{kicker_color};font-weight:800;font-size:23px;letter-spacing:2.5px;direction:rtl;z-index:7;text-shadow:0 2px 6px rgba(0,0,0,.7);}}
-.headline{{position:absolute;top:84px;right:64px;left:64px;color:#ffffff;font-weight:800;font-size:52px;line-height:1.32;text-align:right;direction:rtl;text-shadow:0 2px 4px rgba(0,0,0,.9), 0 8px 30px rgba(0,0,0,.75);z-index:7;}}
-.underline{{position:absolute;top:206px;right:180px;width:220px;height:6px;border-radius:3px;background:linear-gradient(90deg, rgba(232,176,75,0) 0%, {underline_color} 100%);z-index:7;}}
-.glass-panel{{position:absolute;left:64px;right:64px;top:288px;height:130px;border-radius:26px;z-index:6;display:flex;align-items:center;gap:22px;padding:0 40px;{panel_style}}}
+.headline{{position:absolute;top:84px;right:64px;left:64px;color:#ffffff;font-weight:800;font-size:{headline_size}px;line-height:1.32;text-align:right;direction:rtl;text-shadow:0 2px 4px rgba(0,0,0,.9), 0 8px 30px rgba(0,0,0,.75);z-index:7;}}
+.underline{{position:absolute;top:{underline_top}px;right:180px;width:220px;height:6px;border-radius:3px;background:linear-gradient(90deg, rgba(232,176,75,0) 0%, {underline_color} 100%);z-index:7;}}
+.glass-panel{{position:absolute;left:64px;right:64px;top:{panel_top}px;height:130px;border-radius:26px;z-index:6;display:flex;align-items:center;gap:22px;padding:0 40px;{panel_style}}}
 .badge{{font-family:'Courier New',monospace;font-weight:700;font-size:28px;padding:16px 34px;border-radius:40px;white-space:nowrap;}}
 .badge.win{{background:linear-gradient(180deg,#3fd9c9,#0e9089);color:#04231d;box-shadow:0 0 40px rgba(18,168,159,.65);}}
 .badge.lose{{background:rgba(19,47,58,.55);color:#e6a196;border:2.5px solid #d3695a;position:relative;}}
@@ -58,7 +58,7 @@ html,body{{margin:0;padding:0;width:1200px;height:750px;overflow:hidden;font-fam
 .arrow{{color:#eafaf7;font-size:34px;}}
 .stat-number{{font-family:'Courier New',monospace;font-weight:700;font-size:56px;color:#3fd9c9;text-shadow:0 0 30px rgba(18,168,159,.6);}}
 .stat-label{{font-size:24px;font-weight:600;color:#e9f4f2;direction:rtl;}}
-.desc{{position:absolute;left:64px;right:64px;top:452px;color:#e9f4f2;font-size:28px;font-weight:600;text-align:right;direction:rtl;z-index:7;text-shadow:0 2px 6px rgba(0,0,0,.85), 0 6px 18px rgba(0,0,0,.6);}}
+.desc{{position:absolute;left:64px;right:64px;top:{desc_top}px;color:#e9f4f2;font-size:28px;font-weight:600;text-align:right;direction:rtl;z-index:7;text-shadow:0 2px 6px rgba(0,0,0,.85), 0 6px 18px rgba(0,0,0,.6);}}
 .brandmark{{position:absolute;left:60px;bottom:52px;z-index:8;}}
 .brandmark img{{width:64px;height:64px;border-radius:50%;box-shadow:0 4px 16px rgba(0,0,0,.55);}}
 .footer{{position:absolute;right:64px;bottom:62px;color:{footer_color};font-family:'Courier New',monospace;font-size:19px;font-weight:700;letter-spacing:1px;direction:rtl;z-index:7;text-shadow:0 2px 6px rgba(0,0,0,.7);}}
@@ -244,6 +244,14 @@ def main():
     else:
         sys.exit("error: pass either --badge-win/--badge-lose or --stat-number")
 
+    # Headlines longer than ~30 chars tend to wrap to 2 lines at the large
+    # size; shrink the font and push everything below it down so the gold
+    # underline and glass panel never collide with a wrapped second line.
+    if len(args.headline) > 30:
+        headline_size, underline_top, panel_top, desc_top = 40, 222, 310, 474
+    else:
+        headline_size, underline_top, panel_top, desc_top = 52, 175, 288, 452
+
     with open(FONT_PATH, "rb") as f:
         font_b64 = base64.b64encode(f.read()).decode()
     with open(LOGO_PATH, "rb") as f:
@@ -257,6 +265,10 @@ def main():
         desc=html.escape(args.desc),
         footer=html.escape(args.footer),
         panel_content=panel_content,
+        headline_size=headline_size,
+        underline_top=underline_top,
+        panel_top=panel_top,
+        desc_top=desc_top,
         **v,
     )
 
