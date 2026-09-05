@@ -7,6 +7,11 @@ const FEEDS = [
   "https://searchengineland.com/feed/",
 ];
 
+const RLM = "‏";
+function rtl(line: string): string {
+  return line ? RLM + line : line;
+}
+
 function xmlTag(block: string, tag: string): string {
   const m = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i"));
   if (!m) return "";
@@ -124,7 +129,7 @@ async function buildPersianPost(item: FeedItem): Promise<string> {
     "",
     `${bulb} اگه روی سئو یا مدیریت سایتکار می‌کنی، اینو چک کن.`,
     `${pin} <a href="${item.link}">منبع (${sourceLabel(item.link)})</a>  #سئو #اخبار_سئو`,
-  ];
+  ].map(rtl);
 
   return fitCaption(lines);
 }
@@ -163,7 +168,7 @@ Deno.serve(async (req: Request) => {
       .select("*", { count: "exact", head: true })
       .gte("posted_at", startOfDay.toISOString());
 
-    if ((count ?? 0) >= 10) {
+    if ((count ?? 0) >= 17) {
       return new Response("daily cap reached", { status: 200 });
     }
 
