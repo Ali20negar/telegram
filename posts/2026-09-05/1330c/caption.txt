@@ -1,0 +1,8 @@
+‏🔴 باگ گزارش هوش مصنوعی سرچ کنسول رفع شد
+
+‏◆ از ۱۳ اوت یه باگ ثبت آمار باعث افت عجیب impressions توی گزارش Generative AI Performance سرچ کنسول شده بود.
+‏◆ گوگل ۳۱ اوت اعلام کرد که این مشکل رفع شده — تاکید کرده این فقط یه باگ لاگ‌گیری بوده، نه افت واقعی دیده‌شدن سایت‌ها توی نتایج AI.
+
+‏💡 اگه بین ۱۳ تا ۳۱ اوت افت عجیب توی گزارش AI کنسولت دیدی، نگران نباش؛ الان باید داده‌ها درست شده باشن.
+
+‏📎 <a href="https://searchengineland.com/google-search-console-generative-ai-performance-report-in-search-data-bug-485215">منبع: Search Engine Land</a>  #سئو #سرچ_کنسول
