@@ -85,9 +85,20 @@ function splitSentences(text: string): string[] {
 
 function sourceLabel(link: string): string {
   if (link.includes("seroundtable")) return "SERoundtable";
-  if (link.includes("searchenginejournal")) return "Search Engine Journal";
-  if (link.includes("searchengineland")) return "Search Engine Land";
+  if (link.includes("searchenginejournal")) return "SEJ";
+  if (link.includes("searchengineland")) return "SEL";
   return "منبع خارجی";
+}
+
+// Telegram caption limit is 1024 chars. Keep it short by design;
+// this is just a safety net that drops the second bullet if needed.
+function fitCaption(lines: string[], max = 1000): string {
+  let text = lines.join("\n");
+  if (text.length <= max) return text;
+  const withoutSecondBullet = lines.filter((_, i) => i !== 2);
+  text = withoutSecondBullet.join("\n");
+  if (text.length <= max) return text;
+  return text.slice(0, max - 1) + "…";
 }
 
 async function buildPersianPost(item: FeedItem): Promise<string> {
@@ -96,27 +107,26 @@ async function buildPersianPost(item: FeedItem): Promise<string> {
     translate(item.description),
   ]);
 
-  const bulletSentences = splitSentences(faDesc).slice(0, 3);
+  const bulletSentences = splitSentences(faDesc).slice(0, 2);
   const bulletPrefix = "◆ ";
   const bullets = bulletSentences.length
-    ? bulletSentences.map((s) => bulletPrefix + s).join("\n")
-    : bulletPrefix + (faDesc || faTitle);
+    ? bulletSentences.map((s) => bulletPrefix + s)
+    : [bulletPrefix + (faDesc || faTitle)];
 
   const redCircle = "🔴";
   const bulb = "💡";
   const pin = "📎";
 
-  return [
+  const lines = [
     `${redCircle} ${faTitle}`,
     "",
-    bullets,
+    ...bullets,
     "",
-    `${bulb} چرا مهمه: اگه روی سئو یا مدیریت سایتکار می‌کنی خوبه سری بزنی به این خبر، جزئیات کامل توی منبعه.`,
-    "",
-    `${pin} منبع (${sourceLabel(item.link)}): <a href="${item.link}">مطالعه کامل</a>`,
-    "",
-    "#سئو #گوگل #اخبار_سئو #دیجیتال_مارکتینگ",
-  ].join("\n");
+    `${bulb} اگه روی سئو یا مدیریت سایتکار می‌کنی، اینو چک کن.`,
+    `${pin} <a href="${item.link}">منبع (${sourceLabel(item.link)})</a>  #سئو #اخبار_سئو`,
+  ];
+
+  return fitCaption(lines);
 }
 
 Deno.serve(async (req: Request) => {
@@ -169,31 +179,33 @@ Deno.serve(async (req: Request) => {
       return new Response("no new item", { status: 200 });
     }
 
-    const fullText = await buildPersianPost(fresh);
+    const caption = await buildPersianPost(fresh);
     const ogImage = await fetchOgImage(fresh.link);
 
     const tgBase = `https://api.telegram.org/bot${botToken}`;
+    let tgRes: Response;
 
     if (ogImage) {
-      const photoRes = await fetch(`${tgBase}/sendPhoto`, {
+      tgRes = await fetch(`${tgBase}/sendPhoto`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ chat_id: chatId, photo: ogImage }),
+        body: JSON.stringify({ chat_id: chatId, photo: ogImage, caption, parse_mode: "HTML" }),
       });
-      if (!photoRes.ok) {
-        console.error("sendPhoto failed, falling back to text-only", await photoRes.text());
+      if (!tgRes.ok) {
+        console.error("sendPhoto failed, falling back to text-only", await tgRes.text());
+        tgRes = await fetch(`${tgBase}/sendMessage`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ chat_id: chatId, text: caption, parse_mode: "HTML" }),
+        });
       }
+    } else {
+      tgRes = await fetch(`${tgBase}/sendMessage`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: caption, parse_mode: "HTML" }),
+      });
     }
-
-    const tgRes = await fetch(`${tgBase}/sendMessage`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: fullText,
-        parse_mode: "HTML",
-      }),
-    });
 
     if (!tgRes.ok) {
       const errText = await tgRes.text();
