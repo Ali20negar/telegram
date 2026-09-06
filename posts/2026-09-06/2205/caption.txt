@@ -1,0 +1,8 @@
+‏🔴 <b>برای اخبار داغ، AI Mode حالا لینک نشون می‌ده</b>
+
+‏◆ گوگل قابلیت «کاروسل لینک برای موضوعات درحال‌رشد» رو که قبلاً فقط توی AI Overviews بود، حالا به AI Mode هم آورده. رابی استین از گوگل گفت: «برای موضوعات ترند، لینک مقاله‌ها و صفحات وب (از جمله Preferred Sources‌ت) درست وسط پاسخ AI نشون داده می‌شه.»
+‏◆ این قابلیت فقط برای موضوعات ترند/breaking فعاله، نه هر جست‌وجویی — پس با پستِ صبح امروز درباره‌ی بی‌لینکی AI Mode با Gemini 3.8 Flash تناقضی نداره.
+
+‏💡 اگه محتوای خبری/به‌روز تولید می‌کنی، شانس دیده‌شدن توی AI Mode برات بیشتر شده — به‌خصوص اگه Preferred Source باشی.
+
+‏📎 <a href="https://searchengineland.com/google-adds-link-carousels-for-developing-topics-in-ai-mode-485884">منبع: Search Engine Land</a>  #سئو #AI_Mode
