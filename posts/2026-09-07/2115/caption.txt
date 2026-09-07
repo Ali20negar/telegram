@@ -1,0 +1,8 @@
+‏🔴 <b>Applebot-Extended هیچ تاثیری روی رتبه‌بندی سرچ نداره</b>
+
+‏◆ اپل توی مستندات Applebot این خط رو اضافه کرده: «قوانین سایت برای Applebot-Extended توی رتبه‌بندی سرچ در نظر گرفته نمی‌شه.» یعنی این خزنده فقط برای <b>آموزش هوش مصنوعی اپل</b> استفاده می‌شه، نه ایندکس/رتبه‌ی سیری و اسپاتلایت.
+‏◆ این شفاف‌سازی درست قبل از عرضه‌ی iOS 27 و Apple Intelligence جدید اومده — دقیقاً مثل ماجرای Googlebot-Extended در گوگل.
+
+‏💡 اگه Applebot-Extended رو توی robots.txt بلاک کنی، فقط از آموزش AI اپل خارج می‌شی؛ روی حضورت توی سرچ سیری تاثیری نداره.
+
+‏📎 <a href="https://www.seroundtable.com/applebot-extended-search-ranking-42025.html">منبع: Search Engine Roundtable</a>  #سئو #اپل
